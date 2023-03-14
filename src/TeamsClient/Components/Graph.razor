@@ -5,6 +5,7 @@
 @inject TeamsFx teamsfx
 @inject TeamsUserCredential teamsUserCredential
 @inject IOneDriveService oneDriveService
+@inject IChatService chatService
 
 <div>
     <h2>Get the user's profile photo</h2>
@@ -36,7 +37,15 @@
     public User Profile { get; set; }
     public string UserPhotoUri { get; set; }
 
-    private readonly string[] _scope = { "User.Read", "Files.ReadWrite", "Files.ReadWrite.All", "Sites.ReadWrite.All" };
+    private readonly string[] _scope = 
+    { 
+        "User.Read",
+        "Files.ReadWrite",
+        "Files.ReadWrite.All",
+        "Sites.ReadWrite.All",
+        "Chat.Create",
+        "Chat.ReadWrite"
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,7 +64,17 @@
         Profile = await graph.Me.Request().GetAsync();
         UserPhotoUri = await GetPhotoAsync(graph);
 
-        await oneDriveService.CreateOneDriveFolder("Kondio", graph);
+        //await oneDriveService.CreateOneDriveFolder("Kondio", graph);
+
+        string[] ids =
+        {
+            "bf98dc19-3ec1-4258-a86b-b2f7e34f3ce0",
+            "83ed636c-a93b-492b-910b-66b4c3922dcf",
+            "eed79d6b-5ec3-40d3-8a6c-f95fc03e4319"
+    };
+
+        await chatService.CreateChatAsync("haide na dock-a", ids, graph);
+
 
         IsLoading = false;
         ErrorMessage = string.Empty;
@@ -98,7 +117,7 @@
         IsLoading = false;
         return false;
     }
-    
+
     private GraphServiceClient GetGraphServiceClient()
     {
         var msGraphAuthProvider = new MsGraphAuthProvider(teamsUserCredential, _scope);
