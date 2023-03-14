@@ -1,8 +1,10 @@
 ﻿@using System.IO
 @using Azure.Core
 @using Microsoft.Graph
+@using TeamsClient.Services.Contracts;
 @inject TeamsFx teamsfx
 @inject TeamsUserCredential teamsUserCredential
+@inject IOneDriveService oneDriveService
 
 <div>
     <h2>Get the user's profile photo</h2>
@@ -34,7 +36,7 @@
     public User Profile { get; set; }
     public string UserPhotoUri { get; set; }
 
-    private readonly string _scope = "User.Read";
+    private readonly string[] _scope = { "User.Read", "Files.ReadWrite", "Files.ReadWrite.All", "Sites.ReadWrite.All" };
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,6 +54,8 @@
 
         Profile = await graph.Me.Request().GetAsync();
         UserPhotoUri = await GetPhotoAsync(graph);
+
+        await oneDriveService.CreateOneDriveFolder("Kondio", graph);
 
         IsLoading = false;
         ErrorMessage = string.Empty;
@@ -71,12 +75,12 @@
         }
     }
 
-    private async Task<bool> HasPermission(string scope)
+    private async Task<bool> HasPermission(string[] scope)
     {
         IsLoading = true;
         try
         {
-            await teamsUserCredential.GetTokenAsync(new TokenRequestContext(new string[] { _scope }), new System.Threading.CancellationToken());
+            await teamsUserCredential.GetTokenAsync(new TokenRequestContext(_scope), new System.Threading.CancellationToken());
             return true;
         }
         catch (ExceptionWithCode e)

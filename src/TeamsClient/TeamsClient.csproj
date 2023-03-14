@@ -22,4 +22,8 @@
     <PackageReference Include="Microsoft.TeamsFx" Version="1.2.*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TeamsClient.Services\TeamsClient.Services.csproj" />
+  </ItemGroup>
+
 </Project>
