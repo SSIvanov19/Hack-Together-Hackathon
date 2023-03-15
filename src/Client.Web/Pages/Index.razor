@@ -1,19 +1,22 @@
 ﻿@page "/"
-@inject DialogService DialogService
+@using Client.Services.Contracts;
 @using Radzen
-@using Radzen.Blazor.Rendering;
-<PageTitle>Index</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-@*<SurveyPrompt Title="How is Blazor working for you?" />
-<RadzenButton Text="@text"></RadzenButton>
-@code {
-    string text = "Hi";
-}*@
+@using Radzen.Blazor.Rendering
+<PageTitle>Stime | Index</PageTitle>
+@inject IEventsService EventService
 @inject DialogService DialogService
+@inject NotificationService NotificationService
+@inject Microsoft.Graph.GraphServiceClient GraphServiceClient
+
+@*<RadzenButton Icon="add" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" class="rz-border-radius-10 rz-shadow-10" />*@
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+    }
+</style>
+
+<RadzenButton Variant="Variant.Flat" Text="New Meeting" ButtonStyle="ButtonStyle.Primary" />
 
 <RadzenScheduler @ref=@scheduler SlotRender=@OnSlotRender style="height: 768px;" TItem="AppointmentData" Data=@appointments StartProperty="Start" EndProperty="End"
                  TextProperty="Text" SelectedIndex="2"
@@ -24,20 +27,85 @@ Welcome to your new app.
     <RadzenYearView />
 </RadzenScheduler>
 
+    <RadzenTemplateForm Data="@order" Submit="@((Order args) => { Submit(args); })">
+    <div class="container-fluid">
+        <div class="row">   
+            <div class="col-md-6">
+                <RadzenFieldset Text="Purchase Info">
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Credit Card" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenDropDown @bind-Value="order.CardId" AllowClear="true" Placeholder="Select something" Data="@cards" style="width: 100%;" TextProperty="CardNr" ValueProperty="CardId" Name="CardId">
+                            </RadzenDropDown>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Card #" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" Name="CardNr" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Expiry Date" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenDatePicker style="width: 100%;" Name="ExpiryDate" @bind-Value="order.ExpiryDate" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Cardholder" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" Name="CardHolder" />
+                        </div>
+                    </div>
+                </RadzenFieldset>
+            </div>
+        </div>
+    </div>
+</RadzenTemplateForm>
+
 @code {
     RadzenScheduler<AppointmentData> scheduler;
     Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
 
-    IList<AppointmentData> appointments = new List<AppointmentData>
+    new List<AppointmentData> appointments = new List<AppointmentData>();
+    /*
+    * 
+    = new List<AppointmentData>
     {
-        new AppointmentData { Start = DateTime.Today.AddDays(-2), End = DateTime.Today.AddDays(-2), Text = "Birthday" },
-        new AppointmentData { Start = DateTime.Today.AddDays(-11), End = DateTime.Today.AddDays(-10), Text = "Day off" },
-        new AppointmentData { Start = DateTime.Today.AddDays(-10), End = DateTime.Today.AddDays(-8), Text = "Work from home" },
-        new AppointmentData { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(12), Text = "Online meeting" },
-        new AppointmentData { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(13), Text = "Skype call" },
-        new AppointmentData { Start = DateTime.Today.AddHours(14), End = DateTime.Today.AddHours(14).AddMinutes(30), Text = "Dentist appointment" },
-        new AppointmentData { Start = DateTime.Today.AddDays(1), End = DateTime.Today.AddDays(12), Text = "Vacation" },
-    };
+    new AppointmentData { Start = DateTime.Today.AddDays(-2), End = DateTime.Today.AddDays(-2), Text = "Birthday" },
+    new AppointmentData { Start = DateTime.Today.AddDays(-11), End = DateTime.Today.AddDays(-10), Text = "Day off" },
+    new AppointmentData { Start = DateTime.Today.AddDays(-10), End = DateTime.Today.AddDays(-8), Text = "Work from home" },
+    new AppointmentData { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(12), Text = "Online meeting" },
+    new AppointmentData { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(13), Text = "Skype call" },
+    new AppointmentData { Start = DateTime.Today.AddHours(14), End = DateTime.Today.AddHours(14).AddMinutes(30), Text = "Dentist appointment" },
+    new AppointmentData { Start = DateTime.Today.AddDays(1), End = DateTime.Today.AddDays(12), Text = "Vacation" },
+     };
+     */
+
+    protected async override Task OnInitializedAsync()
+    {
+        var events = await EventService.GetMyEvents(GraphServiceClient);
+
+        foreach(var ev in events)
+        {
+            appointments.Add(new AppointmentData()
+                {
+                    Start = DateTime.Parse(ev.Start.DateTime),
+                    End = DateTime.Parse(ev.End.DateTime),
+                    Text = ev.Subject
+                });
+        }
+
+        StateHasChanged();
+    }
 
     void OnSlotRender(SchedulerSlotRenderEventArgs args)
     {
@@ -88,5 +156,74 @@ Welcome to your new app.
         {
             args.Attributes["style"] = "background: red";
         }
+    }
+
+
+    // ------- form -------
+    public class Order
+    {
+        public int CardId { get; set; }
+        public string CardNr { get; set; }
+        public DateTime ExpiryDate { get; set; }
+        public string CardHolder { get; set; }
+        public string Name { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
+        public int Country { get; set; }
+        public int StoreId { get; set; }
+        public string Warehouse { get; set; }
+        public string Region { get; set; }
+        public string System { get; set; }
+        public int TransId { get; set; }
+        public string Register { get; set; }
+        public string Clerk { get; set; }
+        public decimal Amount { get; set; }
+        public decimal Tax { get; set; }
+        public DateTime OrderDate { get; set; }
+        public DateTime ShipDate { get; set; }
+    }
+
+    public class CreditCard
+    {
+        public int CardId { get; set; }
+        public string CardNr { get; set; }
+    }
+
+    public class Country
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    Order order = new Order()
+        {
+            ExpiryDate = DateTime.Parse("10/10/2022"),
+            OrderDate = DateTime.Now,
+            ShipDate = DateTime.Now
+        };
+
+    List<CreditCard> cards = new List<CreditCard>()
+{
+        new CreditCard() { CardId = 1, CardNr = "5555555555554444" },
+        new CreditCard() { CardId = 2, CardNr = "4012888888881881" }
+    };
+
+    List<Country> countries = new List<Country>()
+{
+        new Country() { Id = 1, Name = "USA" },
+        new Country() { Id = 2, Name = "Germany" }
+    };
+
+    void Submit(Order arg)
+    {
+        //
+    }
+
+    void Cancel()
+    {
+        //
     }
 }
