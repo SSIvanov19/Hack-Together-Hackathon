@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Client.Services.Contracts;
+@using Microsoft.Graph;
 @using Radzen
 @using Radzen.Blazor.Rendering
 <PageTitle>Stime | Index</PageTitle>
@@ -7,7 +8,7 @@
 @inject DialogService DialogService
 @inject NotificationService NotificationService
 @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
-
+@inject ISearchBar SearchBarService
 @*<RadzenButton Icon="add" ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Large" class="rz-border-radius-10 rz-shadow-10" />*@
 
 <style>
@@ -41,9 +42,55 @@
                             </RadzenDropDown>
                         </div>
                     </div>
+                    @if (order.CardId == 2)
+                    {
+                        <div class="row">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="Teamates" />
+                            </div>
+                            <div class="col-md-8">
+                                <RadzenAutoComplete @bind-Value=@searchValue Change=@OnChange LoadData=@OnLoadData Data=@users Placeholder="Search for users" TextProperty="DisplayName" style="width: 100%;">
+                                <Template Context="user">
+                                    @user.DisplayName
+                                </Template>
+                            </RadzenAutoComplete>
+                            <RadzenText TextStyle="TextStyle.Body2">
+                                Start typing e.g. Alex
+                            </RadzenText>
+                            </div>
+                        </div>
+                        <RadzenFieldset AllowCollapse="true" Style="width: 700px; margin: 40px auto;">
+                            <HeaderTemplate>
+                                <span class="d-inline-flex align-items-center align-middle">
+                                    <RadzenIcon Icon="account_box" class="me-1" /><b>Selected Users</b>
+                                </span>
+                            </HeaderTemplate>
+                            <ChildContent>
+                                <RadzenDataList PageSize="4" WrapItems="true" AllowPaging="true"
+                                            Data="@selectedUsers" TItem="User">
+                                    <Template Context="user">
+                                        <RadzenCard Style="width: 250px">
+                                            <div class="d-flex flex-row align-items-center">
+                                                <div>
+                                                    <h4 class="mb-0">@(user.DisplayName.Split(" ")[0] + " " + user.DisplayName.Split(" ")[1])</h4>
+                                                    <div>@user.UserPrincipalName</div>
+         
+                                                </div>
+                                            </div>
+                                        </RadzenCard>
+                                    </Template>
+                                </RadzenDataList>
+                            </ChildContent>
+                            <SummaryTemplate>
+                                <RadzenCard class="mt-3">
+                                    <b>@selectedUsers.Count() Users</b>
+                                </RadzenCard>
+                            </SummaryTemplate>
+                        </RadzenFieldset>
+                    }
                     <div class="row">
                         <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Activity Name" />
+                            <RadzenLabel Text="Activity " />
                         </div>
                         <div class="col-md-8">
                             <RadzenTextBox style="width: 100%;" Name="CardNr" />
@@ -86,20 +133,30 @@
     RadzenScheduler<AppointmentData> scheduler;
     Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
 
-    new List<AppointmentData> appointments = new List<AppointmentData>();
-    /*
-    * 
-    = new List<AppointmentData>
+    List<AppointmentData> appointments = new List<AppointmentData>();
+
+    string searchValue;
+
+    List<User> users = new ();
+    List<User> selectedUsers = new();
+
+    protected async Task OnChange(dynamic args)
     {
-    new AppointmentData { Start = DateTime.Today.AddDays(-2), End = DateTime.Today.AddDays(-2), Text = "Birthday" },
-    new AppointmentData { Start = DateTime.Today.AddDays(-11), End = DateTime.Today.AddDays(-10), Text = "Day off" },
-    new AppointmentData { Start = DateTime.Today.AddDays(-10), End = DateTime.Today.AddDays(-8), Text = "Work from home" },
-    new AppointmentData { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(12), Text = "Online meeting" },
-    new AppointmentData { Start = DateTime.Today.AddHours(10), End = DateTime.Today.AddHours(13), Text = "Skype call" },
-    new AppointmentData { Start = DateTime.Today.AddHours(14), End = DateTime.Today.AddHours(14).AddMinutes(30), Text = "Dentist appointment" },
-    new AppointmentData { Start = DateTime.Today.AddDays(1), End = DateTime.Today.AddDays(12), Text = "Vacation" },
-     };
-     */
+        if (selectedUsers.Where(user => user.DisplayName == args).Count() == 0)
+        {
+            var user = users.Where(user => user.DisplayName == args).FirstOrDefault();
+            if (user is not null)
+            {
+                selectedUsers.Add(user);
+                StateHasChanged();
+            }
+        }
+    }
+
+    protected async Task OnLoadData(LoadDataArgs args)
+    {
+        users = (await SearchBarService.FindUser(args.Filter, GraphServiceClient)).ToList();
+    }
 
     protected async override Task OnInitializedAsync()
     {
