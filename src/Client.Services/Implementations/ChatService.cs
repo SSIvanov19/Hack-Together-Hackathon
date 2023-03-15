@@ -12,35 +12,34 @@ internal class ChatService : IChatService
 {
     public async Task<string> CreateChatAsync(string title, string[] userIds, GraphServiceClient graphClient)
     {
-        var members = new List<ConversationMember>();
-        /*
+        var members = new ChatMembersCollectionPage();
+
         foreach (var id in userIds)
         {
-            members.Append(new ConversationMember()
+            members.Append(new AadUserConversationMember()
             {
-                OdataType = "#microsoft.graph.aadUserConversationMember",
-                Roles = new List<string>
+                Roles = new List<string>()
                 {
-                    "owner",
+                    "owner"
                 },
-                AdditionalData = new Dictionary<string, object>
+                AdditionalData = new Dictionary<string, object>()
                 {
-                    {
-                        "user@odata.bind" , $"https://graph.microsoft.com/v1.0/users('{id}')"
-                    },
-                },
+                    {"user@odata.bind", $"https://graph.microsoft.com/v1.0/users('{id}')"}
+                }
             });
         }
 
-        var requestBody = new Chat
+        var chat = new Chat
         {
             ChatType = ChatType.Group,
             Topic = title,
             Members = members
         };
 
-        var response = await graphClient.Chats.PostAsync(requestBody);
-        */
-        return " ";
+        var response = await graphClient.Chats
+            .Request()
+            .AddAsync(chat);
+
+        return response.Id;
     }
 }

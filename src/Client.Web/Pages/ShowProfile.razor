@@ -1,9 +1,11 @@
 ﻿@page "/showprofile"
 
+@using Client.Services.Contracts;
 @using Microsoft.Identity.Web
 @using Microsoft.Graph
 @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 @inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
+@inject IChatService ChatService
 
 <h1>Me</h1>
 
@@ -25,6 +27,7 @@ else
             <td>@user.DisplayName</td>
         </tr>
     </table>
+    <button @onclick="CreateChat">Make meeting</button>
 }
 
 @code {
@@ -40,5 +43,17 @@ else
         {
             ConsentHandler.HandleException(ex);
         }
+    }
+
+    protected async Task CreateChat()
+    {
+        string[] ids =
+        {
+            "bf98dc19-3ec1-4258-a86b-b2f7e34f3ce0",
+            "83ed636c-a93b-492b-910b-66b4c3922dcf",
+            "eed79d6b-5ec3-40d3-8a6c-f95fc03e4319"
+        };
+
+        await ChatService.CreateChatAsync("Haide na dock-a", ids, GraphServiceClient);
     }
 }
