@@ -6,6 +6,7 @@
 @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 @inject MicrosoftIdentityConsentAndConditionalAccessHandler ConsentHandler
 @inject IChatService ChatService
+@inject IEventsService EventsService
 
 <h1>Me</h1>
 
@@ -52,8 +53,13 @@ else
             "bf98dc19-3ec1-4258-a86b-b2f7e34f3ce0",
             "83ed636c-a93b-492b-910b-66b4c3922dcf",
             "eed79d6b-5ec3-40d3-8a6c-f95fc03e4319"
-        };
+    };
 
-        await ChatService.CreateChatAsync("Haide na dock-a", ids, GraphServiceClient);
+        var events = await EventsService.GetMyEvents(GraphServiceClient);
+
+        foreach(var ev in events)
+        {
+            Console.WriteLine($"Event name: {ev.Subject} | Start time: {ev.Start.DateTime} | End time: {ev.End.DateTime}");
+        }
     }
 }

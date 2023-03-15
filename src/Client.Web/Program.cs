@@ -10,6 +10,7 @@ using Graph = Microsoft.Graph;
 using Client.Web.Data;
 using Radzen;
 using Radzen.Blazor;
+using Client.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,8 @@ builder.Services.AddAuthorization(options =>
     // By default, all incoming requests will be authorized according to the default policy
     options.FallbackPolicy = options.DefaultPolicy;
 });
+
+builder.Services.AddServices();
 
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
