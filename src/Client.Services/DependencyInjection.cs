@@ -18,6 +18,7 @@ public static class DependencyInjection
         services
             .AddScoped<IOneDriveService, OneDriveService>()
             .AddScoped<IChatService, ChatService>()
-            .AddScoped<IEventsService, EventsService>();
+            .AddScoped<IEventsService, EventsService>()
+            .AddScoped<ISearchBar, SearchBar>();
     }
 }
