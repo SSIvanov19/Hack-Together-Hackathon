@@ -43,7 +43,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Activity" />
+                            <RadzenLabel Text="Activity Name" />
                         </div>
                         <div class="col-md-8">
                             <RadzenTextBox style="width: 100%;" Name="CardNr" />
@@ -67,21 +67,13 @@
                             </RadzenDropDown>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Expiry Date" />
+                            <RadzenLabel Text="Break duration" />
                         </div>
                         <div class="col-md-8">
-                            <RadzenDatePicker style="width: 100%;" Name="ExpiryDate" @bind-Value="order.ExpiryDate" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Cardholder" />
-                        </div>
-                        <div class="col-md-8">
-                            <RadzenTextBox style="width: 100%;" Name="CardHolder" />
+                            <RadzenDropDown @bind-Value="order.BreakId" AllowClear="true" Placeholder="Select an option" Data="@breakRanges" style="width: 100%;" TextProperty="BreakRange" ValueProperty="BreakId" Name="BreakId">
+                            </RadzenDropDown>
                         </div>
                     </div>
                 </RadzenFieldset>
@@ -183,10 +175,16 @@
     {
         public int CardId { get; set; }
         public string CardNr { get; set; }
+
         public string HourRangeId { get; set; }
         public string HourRange { get; set; }
+
         public string LabelId { get; set; }
         public string LabelRange { get; set; }
+        
+        public string BreakId { get; set; }
+        public string BreakRange { get; set; }
+        
         public DateTime ExpiryDate { get; set; }
         public string CardHolder { get; set; }
         public string Name { get; set; }
@@ -227,6 +225,12 @@
         public string Label { get; set; }
     }
 
+    public class Breaks
+    {
+        public int BreakId { get; set; }
+        public string BreakRange { get; set; }
+    }
+
     public class Country
     {
         public int Id { get; set; }
@@ -253,7 +257,15 @@
     {
         new Labels() { LabelId = 1, Label = "Study"},
         new Labels() { LabelId = 2, Label = "Sport"},
-        new Labels() { LabelId = 3, Label = "Entertainment"},
+        new Labels() { LabelId = 3, Label = "Entertainment"},   
+    };
+
+    List<Breaks> breakRanges = new List<Breaks>()
+    {
+        new Breaks() { BreakId = 1, BreakRange = "10 mins"},
+        new Breaks() { BreakId = 2, BreakRange = "30 mins"},
+        new Breaks() { BreakId = 3, BreakRange = "1 hour"},
+        new Breaks() { BreakId = 4, BreakRange = "More than 1 hour"},
     };
 
     List<CreditCard> cards = new List<CreditCard>()
