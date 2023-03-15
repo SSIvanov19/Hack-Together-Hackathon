@@ -31,24 +31,43 @@
     <div class="container-fluid">
         <div class="row">   
             <div class="col-md-6">
-                <RadzenFieldset Text="Purchase Info">
+                <RadzenFieldset Text="Find free time">
                     <div class="row">
                         <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Credit Card" />
+                            <RadzenLabel Text="Session type" />
                         </div>
                         <div class="col-md-8">
-                            <RadzenDropDown @bind-Value="order.CardId" AllowClear="true" Placeholder="Select something" Data="@cards" style="width: 100%;" TextProperty="CardNr" ValueProperty="CardId" Name="CardId">
+                            <RadzenDropDown @bind-Value="order.CardId" AllowClear="true" Placeholder="Select an option" Data="@cards" style="width: 100%;" TextProperty="CardNr" ValueProperty="CardId" Name="CardId">
                             </RadzenDropDown>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Card #" />
+                            <RadzenLabel Text="Activity" />
                         </div>
                         <div class="col-md-8">
                             <RadzenTextBox style="width: 100%;" Name="CardNr" />
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Label" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenDropDown @bind-Value="order.LabelId" AllowClear="true" Placeholder="Select an option" Data="@labelTypes" style="width: 100%;" TextProperty="Label" ValueProperty="LabelId" Name="LabelId">
+                            </RadzenDropDown>
+                        </div>
+                    </div>                    
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Time duration" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenDropDown @bind-Value="order.HourRangeId" AllowClear="true" Placeholder="Select an option" Data="@hourRanges" style="width: 100%;" TextProperty="HourRange" ValueProperty="HourRangeId" Name="HourRangeId">
+                            </RadzenDropDown>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-4 align-items-center d-flex">
                             <RadzenLabel Text="Expiry Date" />
@@ -126,17 +145,17 @@
     {
         Console.WriteLine($"SlotSelect: Start={args.Start} End={args.End}");
         /*
-         * 
+        * 
         AppointmentData data = await DialogService.OpenAsync<AddAppointmentPage>("Add AppointmentData",
             new Dictionary<string, object> { { "Start", args.Start }, { "End", args.End } });
 
-        if (data != null)
-        {
+            if (data != null)
+            {
             appointments.Add(data);
             // Either call the Reload method or reassign the Data property of the Scheduler
             await scheduler.Reload();
-        }
-         */
+    }
+    */
     }
 
     async Task OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<AppointmentData> args)
@@ -164,6 +183,10 @@
     {
         public int CardId { get; set; }
         public string CardNr { get; set; }
+        public string HourRangeId { get; set; }
+        public string HourRange { get; set; }
+        public string LabelId { get; set; }
+        public string LabelRange { get; set; }
         public DateTime ExpiryDate { get; set; }
         public string CardHolder { get; set; }
         public string Name { get; set; }
@@ -192,6 +215,18 @@
         public string CardNr { get; set; }
     }
 
+    public class Hours
+    {
+        public int HourRangeId { get; set; }
+        public string HourRange { get; set; }
+    }
+
+    public class Labels
+    {
+        public int LabelId { get; set; }
+        public string Label { get; set; }
+    }
+
     public class Country
     {
         public int Id { get; set; }
@@ -205,10 +240,26 @@
             ShipDate = DateTime.Now
         };
 
+    List<Hours> hourRanges = new List<Hours>()
+    {
+        new Hours() { HourRangeId = 1, HourRange = "Less than 1 hour"},
+        new Hours() { HourRangeId = 2, HourRange = "1 to 2 hours"},
+        new Hours() { HourRangeId = 3, HourRange = "2 to 3 hours"},
+        new Hours() { HourRangeId = 4, HourRange = "3 to 4 hours"},
+        new Hours() { HourRangeId = 5, HourRange = "More than 4 hours"}
+    };
+
+    List<Labels> labelTypes = new List<Labels>()
+    {
+        new Labels() { LabelId = 1, Label = "Study"},
+        new Labels() { LabelId = 2, Label = "Sport"},
+        new Labels() { LabelId = 3, Label = "Entertainment"},
+    };
+
     List<CreditCard> cards = new List<CreditCard>()
-{
-        new CreditCard() { CardId = 1, CardNr = "5555555555554444" },
-        new CreditCard() { CardId = 2, CardNr = "4012888888881881" }
+    {
+        new CreditCard() { CardId = 1, CardNr = "Alone" },
+        new CreditCard() { CardId = 2, CardNr = "In a group" }
     };
 
     List<Country> countries = new List<Country>()
