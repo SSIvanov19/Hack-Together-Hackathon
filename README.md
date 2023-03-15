@@ -9,6 +9,7 @@
     <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/SSIvanov19/Hack-Together-Hackathon?style=for-the-badge">
     <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/SSIvanov19/Hack-Together-Hackathon?style=for-the-badge">
     <img src="https://img.shields.io/github/languages/count/SSIvanov19/Hack-Together-Hackathon?style=for-the-badge">
+    <img src="https://img.shields.io/badge/Microsoft%20-Hack--Together-orange?style=for-the-badge&logo=microsoft" href="https://github.com/microsoft/hack-together">
 </p>
 
 ## 💻 About
