@@ -9,7 +9,7 @@
     <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/SSIvanov19/Hack-Together-Hackathon?style=for-the-badge">
     <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/SSIvanov19/Hack-Together-Hackathon?style=for-the-badge">
     <img src="https://img.shields.io/github/languages/count/SSIvanov19/Hack-Together-Hackathon?style=for-the-badge">
-    <img src="https://img.shields.io/badge/Microsoft%20-Hack--Together-orange?style=for-the-badge&logo=microsoft" href="https://github.com/microsoft/hack-together">
+    <a href="https://github.com/microsoft/hack-together"><img src="https://img.shields.io/badge/Microsoft%20-Hack--Together-orange?style=for-the-badge&logo=microsoft">
 </p>
 
 ## 💻 About
@@ -28,8 +28,14 @@ The Personal Scheduling Algorithm with Group Studying or Working is a tool that 
     <a href="https://azure.microsoft.com/en-us/"><img src="https://img.icons8.com/fluency/344/azure-1.png" alt="Azure logo" width=48px /></a>
     <a href="https://azure.microsoft.com/en-us/services/app-service/"><img src="https://ms-azuretools.gallerycdn.vsassets.io/extensions/ms-azuretools/vscode-azureappservice/0.23.3/1650585198428/Microsoft.VisualStudio.Services.Icons.Default" alt="Azure App Service logo" width=48px /></a>
     <a href="https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Blazor.png" alt="Blazor Logo" width=48px /></a>
-    
 </p>
+
+## Our Team 👨‍💻 <a name = "team"></a>
+Stoyan Ivanov | Kalin Chervenkov | Stas Uzunov | Valeri Ivanov |
+-----------------|------------------|----------------|---------------|
+*[SSIvanov19](https://github.com/SSIvanov19)* | *[KSChervenkov19](https://github.com/KSChervenkov19)* | *[SSUzunov19](https://github.com/SSUzunov19)* | *[VTIvanov20](https://github.com/VTIvanov20)* |
+Back-End Developer | Front-End Developer | Back-End Developer | Front-End Developer |
+
 
 ## 📥 Installation & Set Up
 <p> To install our project on your machine you just need to clone it and compile it using Visual Studio. This can be done by following these steps! </p>
