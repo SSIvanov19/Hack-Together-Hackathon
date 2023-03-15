@@ -1,5 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿
+@inherits LayoutComponentBase
 
+@*
+@inject ThemeState ThemeState
+@inject NavigationManager UriHelper
+*@
 <PageTitle>Client.Web</PageTitle>
 
 <div class="page">
@@ -15,6 +20,10 @@
 
         <article class="content px-4">
             @Body
+            <RadzenDialog/>
+            <RadzenNotification/>
+            <RadzenContextMenu/>
+            <RadzenTooltip/>
         </article>
     </main>
 </div>
