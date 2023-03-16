@@ -17,8 +17,11 @@
 
 ## ℹ️ Detailed information 
 <p align="center">
-The Personal Scheduling Algorithm with Group Studying or Working is a tool that optimizes the user's time by asking about their daily routine, work schedule, hobbies, and priorities. It categorizes activities and considers factors such as preferred time of day, duration of activities, and travel time. The project also includes collaborative features such as creating a meeting/chat, sharing files via OneDrive, scraping tasks based on meeting description from MS To Do, and creating a shared whiteboard with MS Whiteboard.
+S.time is a tool that optimizes the user's time by asking about their daily routine, work schedule, hobbies, and priorities. It categorizes activities and considers factors such as preferred time of day, duration of activities, and travel time. The project also includes collaborative features such as creating a meeting/chat, sharing files via OneDrive, scraping tasks based on meeting description from MS To Do, and creating a shared whiteboard with MS Whiteboard.
 </p>
+
+## Video showing the idea and demo of the project
+https://user-images.githubusercontent.com/63718744/225488919-fb074eec-d163-44ca-8cae-a0ec01b26cff.mp4
 
 ## 🗂️ Tech Stack:
 <p align="left">
